@@ -1,13 +1,13 @@
 <template>
 	<h1>ToDo List</h1>
 	<hr />
-	<input type="text" id="search" name="name" v-model="searchText" className="form-control" placeholder="Search" @keyup.enter="searchTodo">
+	<input type="text" id="search" class="form-control" name="name" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo">
 	<hr />
 	<TodoFrom @add-todo="addTodo" />
 	<div v-if="error">
 		{{ error }}
 	</div>
-	<div v-if="!todos.length" className="text-center">
+	<div class="text-center" v-if="!todos.length">
 		검색된 결과가 없습니다.
 	</div>
 	<TodoItems :todos="todos" @toggle-todo="toggleTodo" @delete-todo="deleteTodo" />
@@ -60,7 +60,7 @@ export default {
 			try {
 				await axios.post("http://localhost:3001/todos", {
 					subject  : todo.subject,
-					complated: todo.complated,
+					completed: todo.completed,
 				});
 
 				await getTodos(1);
@@ -90,9 +90,9 @@ export default {
 
 			try {
 				await axios.patch("http://localhost:3001/todos/" + id, {
-					complated: checked,
+					completed: checked,
 				});
-				todos.value[idx].complated = checked;
+				todos.value[idx].completed = checked;
 			} catch (err) {
 				console.log(err);
 			}
