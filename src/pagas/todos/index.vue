@@ -2,21 +2,21 @@
 	<div>
 		<div class="d-flex justify-content-between align-items-center">
 			<h1>ToDo List</h1>
-			<button type="button" @click="moveToCreate">Create</button>
+			<button type="button" class="btn btn-primary" @click="moveToCreate">Create</button>
 		</div>
+		<hr />
+		<input type="text" id="search" class="form-control" name="name" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo">
+		<hr />
+		<div v-if="error">
+			{{ error }}
+		</div>
+		<div class="text-center" v-if="!todos.length">
+			검색된 결과가 없습니다.
+		</div>
+		<TodoItems :todos="todos" @toggle-todo="toggleTodo" @delete-todo="deleteTodo" />
+		<PagingCmop :currentPage="currentPage" :numberOfPage="numberOfPage" :todos="todos" @get-todos="getTodos" />
+		<ToastMessage v-if="isShowToast" :message="toastMessage" :type="toastAlertType" />
 	</div>
-	<hr />
-	<input type="text" id="search" class="form-control" name="name" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo">
-	<hr />
-	<div v-if="error">
-		{{ error }}
-	</div>
-	<div class="text-center" v-if="!todos.length">
-		검색된 결과가 없습니다.
-	</div>
-	<TodoItems :todos="todos" @toggle-todo="toggleTodo" @delete-todo="deleteTodo" />
-	<PagingCmop :currentPage="currentPage" :numberOfPage="numberOfPage" :todos="todos" @get-todos="getTodos" />
-	<ToastMessage v-if="isShowToast" :message="toastMessage" :type="toastAlertType" />
 </template>
 
 <script>
@@ -93,8 +93,7 @@ export default {
 			}
 		};
 
-		const deleteTodo = async (idx) => {
-			const id = todos.value[idx].id;
+		const deleteTodo = async (id) => {
 			error.value = "";
 
 			try {

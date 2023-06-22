@@ -7,33 +7,55 @@
 				<label class="form-check-label" :class="{todo: todo.completed}" :for="'todo_'+todo.id" @click.stop>{{ todo.subject }}</label>
 			</div>
 
-			<button type="button" class="btn btn-danger btn-sm" @click.stop="deleteTodo(idx)">Delete</button>
+			<button type="button" class="btn btn-danger btn-sm" @click.stop="openModal(todo.id)">Delete</button>
 		</div>
 	</div>
+	<teleport to="#modal">
+		<Modal v-if="isShowModal" @close="closeModal" @delete="deleteTodo">
+		</Modal>
+	</teleport>
 </template>
 
 <script>
+import { ref } from "vue";
 import { useRouter } from "vue-router";
+import Modal from "@/components/DeleteModal.vue";
 
 export default {
-	props: {
+	components: {
+		Modal,
+	},
+	props     : {
 		todos: {
 			type   : Array,
 			require: true,
 		},
 	},
-	emits: [
+	emits     : [
 		"toggle-todo",
 		"delete-todo",
 	],
 	setup(props, {emit}) {
 		const router = useRouter();
+		const isShowModal = ref(false);
+		const todoDeleteId = ref(null);
 		const toggleTodo = (idx, event) => {
 			emit("toggle-todo", idx, event.target.checked);
 		};
 
-		const deleteTodo = (idx) => {
-			emit("delete-todo", idx);
+		const openModal = (id) => {
+			todoDeleteId.value = id;
+			isShowModal.value = true;
+		};
+
+		const closeModal = () => {
+			todoDeleteId.value = null;
+			isShowModal.value = false;
+		};
+
+		const deleteTodo = () => {
+			emit("delete-todo", todoDeleteId.value);
+			closeModal();
 		};
 
 		const moveToPage = (todoId) => {
@@ -50,6 +72,9 @@ export default {
 			toggleTodo,
 			deleteTodo,
 			moveToPage,
+			isShowModal,
+			openModal,
+			closeModal,
 		};
 	},
 };
