@@ -37,37 +37,21 @@ import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import _ from "lodash";
 import ToastMessage from "@/components/ToastMessage.vue";
+import { useToast } from "@/pagas/composables/toast";
 
 export default {
 	components: {
 		ToastMessage,
 	},
 	setup     : function () {
-		onUnmounted(() => {
-			
-		});
-
 		const route = useRoute();
 		const router = useRouter();
 		const todo = ref(null);
 		const originalTodo = ref(null);
 		const todoId = route.params.id;
 		const loading = ref(true);
-		const toastMessage = ref("");
-		const toastAlertType = ref("");
-		const isShowToast = ref(false);
-
-		const showToast = (message, type) => {
-			toastMessage.value = message;
-			toastAlertType.value = type;
-			isShowToast.value = true;
-
-			setTimeout(() => {
-				toastMessage.value = "";
-				toastAlertType.value = "";
-				isShowToast.value = false;
-			}, 3000);
-		};
+		
+		const {toastMessage, toastAlertType, isShowToast, showToast} = useToast();
 
 		const getTodo = async () => {
 			try {
@@ -76,7 +60,6 @@ export default {
 				todo.value = {...res.data};
 				originalTodo.value = {...res.data};
 				loading.value = false;
-
 			} catch (err) {
 				showToast("Something went wrong", "danger");
 			}

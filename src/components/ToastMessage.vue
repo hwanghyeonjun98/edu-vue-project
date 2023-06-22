@@ -8,7 +8,7 @@
 export default {
 	props: {
 		message: {
-			type   : Storage,
+			type   : String,
 			require: true,
 		},
 		type   : {

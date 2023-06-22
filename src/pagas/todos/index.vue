@@ -1,9 +1,13 @@
 <template>
-	<h1>ToDo List</h1>
+	<div>
+		<div class="d-flex justify-content-between align-items-center">
+			<h1>ToDo List</h1>
+			<button type="button" @click="moveToCreate">Create</button>
+		</div>
+	</div>
 	<hr />
 	<input type="text" id="search" class="form-control" name="name" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo">
 	<hr />
-	<TodoFrom @add-todo="addTodo" />
 	<div v-if="error">
 		{{ error }}
 	</div>
@@ -12,20 +16,23 @@
 	</div>
 	<TodoItems :todos="todos" @toggle-todo="toggleTodo" @delete-todo="deleteTodo" />
 	<PagingCmop :currentPage="currentPage" :numberOfPage="numberOfPage" :todos="todos" @get-todos="getTodos" />
+	<ToastMessage v-if="isShowToast" :message="toastMessage" :type="toastAlertType" />
 </template>
 
 <script>
-import { computed, ref, watch } from "vue";
-import TodoFrom from "@/components/TodoFrom.vue";
+import { computed, onUnmounted, ref, watch } from "vue";
 import TodoItems from "@/components/TodoItems.vue";
 import PagingCmop from "@/components/PagingCmop.vue";
 import axios from "axios";
+import ToastMessage from "@/components/ToastMessage.vue";
+import { useToast } from "@/pagas/composables/toast";
+import router from "@/router";
 
 export default {
 	components: {
-		TodoFrom,
 		TodoItems,
 		PagingCmop,
+		ToastMessage,
 	},
 	setup() {
 		const searchText = ref("");
@@ -39,6 +46,20 @@ export default {
 		const numberOfPage = computed(() => {
 			return Math.ceil(numberOfTodos.value / limt);
 		});
+
+		const {toastMessage, toastAlertType, isShowToast, showToast} = useToast();
+
+		// const showToast = (message, type) => {
+		// 	toastMessage.value = message;
+		// 	toastAlertType.value = type;
+		// 	isShowToast.value = true;
+		//
+		// 	setTimeout(() => {
+		// 		toastMessage.value = "";
+		// 		toastAlertType.value = "";
+		// 		isShowToast.value = false;
+		// 	}, 5000);
+		// };
 
 		const getTodos = async (page = currentPage.value) => {
 			error.value = "";
@@ -68,6 +89,7 @@ export default {
 			} catch (err) {
 				console.log(err);
 				error.value = "Something went wrong.";
+				showToast("Something went wrong", "danger");
 			}
 		};
 
@@ -95,6 +117,7 @@ export default {
 				todos.value[idx].completed = checked;
 			} catch (err) {
 				console.log(err);
+				showToast("Something went wrong", "danger");
 			}
 		};
 
@@ -121,6 +144,12 @@ export default {
 			}, 2000);
 		});
 
+		const moveToCreate = () => {
+			router.push({
+				name: "TodoCreate",
+			});
+		};
+
 		return {
 			todos,
 			getTodos,
@@ -133,6 +162,11 @@ export default {
 			numberOfPage,
 			currentPage,
 			searchTodo,
+			showToast,
+			toastMessage,
+			toastAlertType,
+			isShowToast,
+			moveToCreate,
 		};
 	},
 };
