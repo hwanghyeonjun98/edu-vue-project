@@ -11,11 +11,32 @@
 	<div class="container">
 		<router-view />
 	</div>
+	<ToastMessage v-if="isShowToast" :message="toastMessage" :type="toastAlertType" />
 </template>
 
 <script>
-export default {};
+import ToastMessage from "@/components/ToastMessage";
+import { useToast } from "@/pagas/composables/toast";
+
+export default {
+	components : {
+		ToastMessage,
+	},
+	setup() {
+		const {toastMessage, toastAlertType, isShowToast, showToast} = useToast();
+
+		return {
+			toastMessage,
+			toastAlertType,
+			isShowToast,
+			showToast,
+		};
+	},
+};
 </script>
 
 <style>
+*:not(input, textarea, select, option) {
+	text-transform: capitalize;
+}
 </style>

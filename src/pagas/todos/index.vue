@@ -5,7 +5,7 @@
 			<button type="button" class="btn btn-primary" @click="moveToCreate">Create</button>
 		</div>
 		<hr />
-		<input type="text" id="search" class="form-control" name="name" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo">
+		<input type="text" id="search" name="name" class="form-control" v-model="searchText" placeholder="Search" @keyup.enter="searchTodo">
 		<hr />
 		<div v-if="error">
 			{{ error }}
@@ -20,16 +20,16 @@
 </template>
 
 <script>
-import { computed, onUnmounted, ref, watch } from "vue";
-import TodoItems from "@/components/TodoItems.vue";
-import PagingCmop from "@/components/PagingCmop.vue";
-import axios from "axios";
-import ToastMessage from "@/components/ToastMessage.vue";
+import { computed, ref, watch } from "vue";
+import TodoItems from "@/components/TodoItems";
+import PagingCmop from "@/components/PagingCmop";
+import axios from "@/axios";
+import ToastMessage from "@/components/ToastMessage";
 import { useToast } from "@/pagas/composables/toast";
 import router from "@/router";
 
 export default {
-	components: {
+	components : {
 		TodoItems,
 		PagingCmop,
 		ToastMessage,
@@ -63,8 +63,9 @@ export default {
 
 		const getTodos = async (page = currentPage.value) => {
 			error.value = "";
+
 			try {
-				const res = await axios.get(`http://localhost:3001/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limt}`);
+				const res = await axios.get(`todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limt}`);
 				todos.value = res.data;
 				currentPage.value = page;
 				numberOfTodos.value = res.headers["x-total-count"];
@@ -79,9 +80,9 @@ export default {
 			error.value = "";
 			// 데이터 베이스 todo 저장
 			try {
-				await axios.post("http://localhost:3001/todos", {
-					subject  : todo.subject,
-					completed: todo.completed,
+				await axios.post("todos", {
+					subject   : todo.subject,
+					completed : todo.completed,
 				});
 
 				await getTodos(1);
@@ -97,7 +98,7 @@ export default {
 			error.value = "";
 
 			try {
-				await axios.delete("http://localhost:3001/todos/" + id);
+				await axios.delete("todos/" + id);
 
 				await getTodos(currentPage.value);
 				// todos.value.splice(idx, 1);
@@ -110,8 +111,8 @@ export default {
 			const id = todos.value[idx].id;
 
 			try {
-				await axios.patch("http://localhost:3001/todos/" + id, {
-					completed: checked,
+				await axios.patch("todos/" + id, {
+					completed : checked,
 				});
 				todos.value[idx].completed = checked;
 			} catch (err) {
@@ -145,7 +146,7 @@ export default {
 
 		const moveToCreate = () => {
 			router.push({
-				name: "TodoCreate",
+				name : "TodoCreate",
 			});
 		};
 

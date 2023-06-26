@@ -5,13 +5,8 @@
 	<form v-else @submit.prevent="onSave">
 		<div class="row">
 			<div class="col-6">
-				<div class="form-group">
-					<label for="">Todo Subject</label>
-					<input type="text" id="" class="form-control" name="" v-model="todo.subject">
-					<div class="text-red" v-if="subjectError">
-						{{ subjectError }}
-					</div>
-				</div>
+				<!--	<Input subject="todo.subject" :error="subjectError" label="subject" @update-subject="updateTodoSubject" />-->
+				<Input v-model:subject="todo.subject" :error="subjectError" label="subject" />
 			</div>
 			<div class="col-6" v-if="editing">
 				<div class="form-group">
@@ -26,7 +21,7 @@
 			<div class="col-12">
 				<div class="form-group">
 					<label for="">Body</label>
-					<textarea id="" class="form-control" name="" v-model="todo.body" cols="30" rows="10"></textarea>
+					<textarea id="" name="" class="form-control" v-model="todo.body" cols="30" rows="10"></textarea>
 				</div>
 			</div>
 		</div>
@@ -42,30 +37,32 @@
 </template>
 
 <script>
-import ToastMessage from "@/components/ToastMessage.vue";
-import { useRoute, useRouter } from "vue-router";
+import ToastMessage from "@/components/ToastMessage";
+import Input from "@/components/Input.vue";
 import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useToast } from "@/pagas/composables/toast";
-import axios from "axios";
+import axios from "@/axios";
 import _ from "lodash";
 
 export default {
-	components: {
+	components : {
 		ToastMessage,
+		Input,
 	},
-	props     : {
-		editing: {
-			type   : Boolean,
-			default: false,
+	props      : {
+		editing : {
+			type    : Boolean,
+			default : false,
 		},
 	},
 	setup(props) {
 		const route = useRoute();
 		const router = useRouter();
 		const todo = ref({
-			subject  : "",
-			completed: false,
-			body     : "",
+			subject   : "",
+			completed : false,
+			body      : "",
 		});
 		const originalTodo = ref(null);
 		const todoId = route.params.id;
@@ -75,11 +72,15 @@ export default {
 
 		const {toastMessage, toastAlertType, isShowToast, showToast} = useToast();
 
+		/*const updateTodoSubject = (newValue) => {
+			todo.value.subject = newValue;
+		};*/
+
 		const getTodo = async () => {
 			loading.value = true;
 
 			try {
-				const res = await axios.get(`http://localhost:3001/todos/${todoId}`);
+				const res = await axios.get(`todos/${todoId}`);
 
 				todo.value = {...res.data};
 				originalTodo.value = {...res.data};
@@ -100,7 +101,7 @@ export default {
 
 		const moveToTodoListPage = () => {
 			router.push({
-				name: "Todos",
+				name : "Todos",
 			});
 		};
 
@@ -118,23 +119,27 @@ export default {
 			try {
 				let res;
 				const data = {
-					subject  : todo.value.subject,
-					completed: todo.value.completed,
-					body     : todo.value.body,
+					subject   : todo.value.subject,
+					completed : todo.value.completed,
+					body      : todo.value.body,
 				};
 
 				if (props.editing) {
-					res = await axios.put(`http://localhost:3001/todos/${todoId}`, data);
+					res = await axios.put(`todos/${todoId}`, data);
 
 					originalTodo.value = {...res.data};
 				} else {
-					await axios.post(`http://localhost:3001/todos`, data);
+					await axios.post("todos", data);
 
 					todo.value.subject = "";
 					todo.value.body = "";
 				}
 
 				showToast(`${props.editing ? "Update" : "Create"} Todo!`);
+
+				if (!props.editing) {
+					await router.push({name : "Todos"});
+				}
 			} catch (err) {
 				showToast("Something went wrong", "danger");
 			}
@@ -151,16 +156,13 @@ export default {
 			toastMessage,
 			toastAlertType,
 			subjectError,
+			// updateTodoSubject,
 		};
 	},
 };
 </script>
 
 <style scoped>
-.text-red {
-	color: red;
-}
-
 .fade-enter-active,
 .fade-leave-active {
 	transition: opacity .5s ease;
