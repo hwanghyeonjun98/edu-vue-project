@@ -10,7 +10,7 @@
 			</div>
 			<div class="col-6" v-if="editing">
 				<div class="form-group">
-					<label for="">Status</label>
+					<label class="text-capitalize">Status</label>
 					<div>
 						<button type="button" class="btn" :class="todo.completed ? 'btn-success' : 'btn-danger'" @click="toggleTodoStatues">
 							{{ todo.completed ? "Coompleted" : "Incompeleted" }}
@@ -20,8 +20,8 @@
 			</div>
 			<div class="col-12">
 				<div class="form-group">
-					<label for="">Body</label>
-					<textarea id="" name="" class="form-control" v-model="todo.body" cols="30" rows="10"></textarea>
+					<label class="text-capitalize" for="todoBody">Body</label>
+					<textarea id="todoBody" name="todoBody" class="form-control" v-model="todo.body" cols="30" rows="10"></textarea>
 				</div>
 			</div>
 		</div>
@@ -31,13 +31,9 @@
 			<button type="button" class="ml-2 btn btn-outline-dark" @click="moveToTodoListPage">Cancel</button>
 		</div>
 	</form>
-	<transition name="fade">
-		<ToastMessage v-if="isShowToast" :message="toastMessage" :type="toastAlertType" />
-	</transition>
 </template>
 
 <script>
-import ToastMessage from "@/components/ToastMessage";
 import Input from "@/components/Input.vue";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -47,7 +43,6 @@ import _ from "lodash";
 
 export default {
 	components : {
-		ToastMessage,
 		Input,
 	},
 	props      : {
@@ -163,18 +158,4 @@ export default {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-	transition: opacity .5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-	opacity: 0;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-	opacity: 1;
-}
 </style>

@@ -1,7 +1,7 @@
 <template>
 	<div class="form-group">
-		<label for="">{{ label }}</label>
-		<input type="text" id="" name="" class="form-control" :value="subject" @input="onInput">
+		<label class="text-capitalize" :for="label">{{ label }}</label>
+		<input type="text" class="form-control" :id="label" :name="label" :value="subject" @input="onInput">
 		<div class="text-red" v-if="{error}">
 			{{ error }}
 		</div>
@@ -10,18 +10,18 @@
 
 <script>
 export default {
-	props: {
-		label  : {
-			type   : String,
-			require: true,
+	props : {
+		label   : {
+			type    : String,
+			require : true,
 		},
-		error  : {
-			type   : String,
-			require: true,
+		error   : {
+			type    : String,
+			require : true,
 		},
-		subject: {
-			type   : String,
-			require: true,
+		subject : {
+			type    : String,
+			require : true,
 		},
 	},
 	setup(props, {emit}) {

@@ -8,13 +8,12 @@
 					<label class="form-check-label" :class="{todo: item.completed}" :for="'todo_'+item.id" @click.stop>{{ item.subject }}</label>
 				</div>
 
-				<button type="button" class="btn btn-danger btn-sm" @click.stop="openModal(todo.id)">Delete</button>
+				<button type="button" class="btn btn-danger btn-sm" @click.stop="openModal(item.id)">Delete</button>
 			</div>
 		</template>
 	</Items>
 	<teleport to="#modal">
-		<Modal v-if="isShowModal" @close="closeModal" @delete="deleteTodo">
-		</Modal>
+		<Modal v-if="isShowModal" @close="closeModal" @delete="deleteTodo" />
 	</teleport>
 </template>
 
@@ -25,17 +24,17 @@ import Modal from "@/components/DeleteModal.vue";
 import Items from "@/components/Items.vue";
 
 export default {
-	components: {
+	components : {
 		Modal,
 		Items,
 	},
-	props     : {
-		todos: {
-			type   : Array,
-			require: true,
+	props      : {
+		todos : {
+			type    : Array,
+			require : true,
 		},
 	},
-	emits     : [
+	emits      : [
 		"toggle-todo",
 		"delete-todo",
 	],
@@ -65,9 +64,9 @@ export default {
 		const moveToPage = (todoId) => {
 			// router.push(`/todos/${todoId}`);
 			router.push({
-				name  : "Todo",
-				params: {
-					id: todoId,
+				name   : "Todo",
+				params : {
+					id : todoId,
 				},
 			});
 		};

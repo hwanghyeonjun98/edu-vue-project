@@ -1,5 +1,5 @@
 <template>
-	<div class="d-flex justify-content-center" v-if="todos.length">
+	<div class="d-flex justify-content-center">
 		<nav aria-label="Page navigation example">
 			<ul class="pagination">
 				<li class="page-item" v-if="currentPage !== 1" @click="getTodos(currentPage - 1)">
@@ -22,14 +22,24 @@
 <script>
 
 export default {
-	emits: [
+	emits : [
 		"get-todos",
 	],
-	props: [
-		"numberOfPage",
-		"currentPage",
-		"todos",
-	],
+	props : {
+		numberOfPage : {
+			type    : Number,
+			require : true,
+		},
+		currentPage  : {
+			type    : Number,
+			require : true,
+		},
+		todos        : {
+			type    : Array,
+			require : true,
+		},
+
+	},
 	setup(props, {emit}) {
 		const getTodos = (page) => {
 			emit("get-todos", page);

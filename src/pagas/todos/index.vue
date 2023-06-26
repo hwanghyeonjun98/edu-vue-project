@@ -14,25 +14,22 @@
 			검색된 결과가 없습니다.
 		</div>
 		<TodoItems :todos="todos" @toggle-todo="toggleTodo" @delete-todo="deleteTodo" />
-		<PagingCmop :currentPage="currentPage" :numberOfPage="numberOfPage" :todos="todos" @get-todos="getTodos" />
-		<ToastMessage v-if="isShowToast" :message="toastMessage" :type="toastAlertType" />
+		<Paging v-if="todos.length" :currentPage="currentPage" :numberOfPage="numberOfPage" :todos="todos" @get-todos="getTodos" />
 	</div>
 </template>
 
 <script>
 import { computed, ref, watch } from "vue";
 import TodoItems from "@/components/TodoItems";
-import PagingCmop from "@/components/PagingCmop";
+import Paging from "@/components/Paging.vue";
 import axios from "@/axios";
-import ToastMessage from "@/components/ToastMessage";
 import { useToast } from "@/pagas/composables/toast";
 import router from "@/router";
 
 export default {
 	components : {
 		TodoItems,
-		PagingCmop,
-		ToastMessage,
+		Paging,
 	},
 	setup() {
 		const searchText = ref("");
